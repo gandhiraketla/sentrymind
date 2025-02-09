@@ -147,6 +147,66 @@ class DatabaseManager:
         
         finally:
             self.disconnect()
+    def get_customers_with_fraudulent_transactions(self, page_number=1, page_size=10, start_date=None, end_date=None):
+        """
+        Retrieve customers with fraudulent transactions grouped by customer_id and account_number.
+        Supports pagination and filtering by a transaction date range.
+        
+        Args:
+            page_number (int): The current page number (default is 1).
+            page_size (int): The number of records per page (default is 10).
+            start_date (str): Start of the transaction date range (YYYY-MM-DD).
+            end_date (str): End of the transaction date range (YYYY-MM-DD).
+        
+        Returns:
+            dict: A dictionary containing customer details and pagination information.
+        """
+        try:
+            if not start_date or not end_date:
+                raise ValueError("Both start_date and end_date are required.")
+            
+            self.connect()
+            
+            offset = (page_number - 1) * page_size
+
+            query = f"""
+                SELECT 
+                    t.customer_id,
+                    c.account_number,
+                    COUNT(*) AS total_fraud_transactions,
+                    SUM(t.transaction_amount) AS total_fraud_amount
+                FROM (
+                    SELECT customer_id, transaction_amount
+                    FROM sentrymind_transactions 
+                    WHERE is_fraud = 1 
+                        AND transaction_date >= %s
+                        AND transaction_date < %s
+                ) t
+                INNER JOIN sentrymind_customers c ON c.customer_id = t.customer_id
+                GROUP BY t.customer_id, c.account_number
+                LIMIT %s OFFSET %s;
+            """
+            
+            self.cursor.execute(query, (start_date, end_date, page_size, offset))
+            customers = self.cursor.fetchall()
+            
+            return {
+                "customers": self._decimal_to_float(customers),
+                "pagination": {
+                    "current_page": page_number,
+                    "page_size": page_size,
+                    "total_records": len(customers)
+                }
+            }
+            
+        except mysql.connector.Error as err:
+            return {"error": f"Error retrieving customers: {err}"}
+        except ValueError as ve:
+            return {"error": str(ve)}
+        finally:
+            self.disconnect()
+
+
 # Usage example:
 if __name__ == "__main__":
     db_manager = DatabaseManager()
@@ -165,6 +225,16 @@ if __name__ == "__main__":
             }
         ]
     }
-    db_manager.saveSARReport(sar_report)
+    result = db_manager.get_customers_with_fraudulent_transactions(
+        page_number=1, 
+        page_size=5, 
+        start_date="2025-01-10 00:00:00", 
+        end_date="2025-01-15 00:00:00"
+    )
+    
+    # Print the result
+    print(json.dumps(result, indent=2))
+
+    #db_manager.saveSARReport(sar_report)
     #print("\nCustomer Details:")
     #print(db_manager.getCustomerDetails("42e60d56-b222-4c67-9432-cfab2520fde0"))
