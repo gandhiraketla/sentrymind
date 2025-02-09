@@ -147,6 +147,40 @@ class DatabaseManager:
         
         finally:
             self.disconnect()
+    def getReports(self):
+        """
+        Retrieve all SAR reports from the `sar_reports` table.
+        The `json_data` column contains JSON, which will be parsed and returned as a Python dictionary.
+        
+        Returns:
+            list: A list of SAR reports, where each report includes parsed JSON data.
+        """
+        try:
+            self.connect()
+            
+            query = "SELECT unique_id, account_number, json_data, created_date FROM sar_reports"
+            self.cursor.execute(query)
+            reports = self.cursor.fetchall()
+
+            # Parse the `json_data` and convert `created_date` to a string
+            for report in reports:
+                try:
+                    report["json_data"] = json.loads(report["json_data"])
+                except json.JSONDecodeError:
+                    report["json_data"] = {"error": "Invalid JSON format"}
+
+                # Convert `created_date` to a string in 'YYYY-MM-DD HH:MM:SS' format
+                if report["created_date"]:
+                    report["created_date"] = report["created_date"].strftime('%Y-%m-%d %H:%M:%S')
+
+            return self._decimal_to_float(reports)
+            
+        except mysql.connector.Error as err:
+            return {"error": f"Error retrieving SAR reports: {err}"}
+        finally:
+            self.disconnect()
+
+
     def get_customers_with_fraudulent_transactions(self, page_number=1, page_size=10, start_date=None, end_date=None):
         """
         Retrieve customers with fraudulent transactions grouped by customer_id and account_number.
@@ -173,6 +207,8 @@ class DatabaseManager:
                 SELECT 
                     t.customer_id,
                     c.account_number,
+                    c.name,
+                    c.account_type,
                     COUNT(*) AS total_fraud_transactions,
                     SUM(t.transaction_amount) AS total_fraud_amount
                 FROM (
@@ -225,14 +261,15 @@ if __name__ == "__main__":
             }
         ]
     }
-    result = db_manager.get_customers_with_fraudulent_transactions(
-        page_number=1, 
-        page_size=5, 
-        start_date="2025-01-10 00:00:00", 
-        end_date="2025-01-15 00:00:00"
-    )
+    #result = db_manager.get_customers_with_fraudulent_transactions(
+     #   page_number=1, 
+      #  page_size=5, 
+       # start_date="2025-02-11", 
+        #end_date="2025-02-28"
+    #)
     
     # Print the result
+    result=db_manager.getReports()
     print(json.dumps(result, indent=2))
 
     #db_manager.saveSARReport(sar_report)

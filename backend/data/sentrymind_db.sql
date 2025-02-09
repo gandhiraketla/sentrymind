@@ -21,3 +21,5 @@ CREATE INDEX idx_cust_id ON sentrymind_transactions (customer_id);
 CREATE INDEX idx_merchant ON sentrymind_transactions (merchant_name);	
 CREATE INDEX idx_city ON sentrymind_transactions (merchant_city);	
 CREATE INDEX idx_trans_date ON sentrymind_transactions (transaction_date);	
+CREATE INDEX idx_trans_fraud_date_cust 
+ON sentrymind_transactions(fraud_type, transaction_date, customer_id, transaction_amount);

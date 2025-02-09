@@ -15,9 +15,16 @@ from util.envutils import EnvUtils
 from datetime import datetime
 from tools.database_manager import DatabaseManager
 from agents.agent_manager import TransactionAnalyzer  # Assuming this exists
-
+import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # Initialize database manager and analyzer
 db_manager = DatabaseManager()
 analyzer = TransactionAnalyzer()
@@ -40,14 +47,17 @@ async def get_fraudulent_transactions(query: FraudTransactionQuery):
     try:
         if not query.start_date or not query.end_date:
             raise HTTPException(status_code=400, detail="Both start_date and end_date are required.")
-
+            
         # Invoke db_manager method
+        print(query.start_date)
+        print(query.end_date)
         result = db_manager.get_customers_with_fraudulent_transactions(
             page_number=query.page_number,
             page_size=query.page_size,
             start_date=query.start_date,
             end_date=query.end_date
         )
+        print(result)
         return result
 
     except Exception as e:
@@ -65,4 +75,13 @@ async def analyze_transaction(customer_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
+@app.get("/reports/")
+async def get_reports():
+    """
+    Endpoint to analyze a transaction for a specific customer ID.
+    """
+    try:
+        result = db_manager.getReports()
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
