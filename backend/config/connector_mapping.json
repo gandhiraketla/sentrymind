@@ -1,0 +1,14 @@
+{
+  "connectors": {
+    "local_filesystem": {
+      "module": "connectors.local_file_system_connector",
+      "class_name": "LocalFileSystemConnector",
+      "description": "Connector for monitoring local folders"
+    },
+    "confluence": {
+      "module": "connectors.confluence_connector",
+      "class_name": "ConfluenceConnector",
+      "description": "Connector for Confluence"
+    }
+  }
+}
