@@ -3,7 +3,6 @@ import random
 import uuid
 from datetime import datetime, timedelta
 from faker import Faker
-
 import os
 import sys
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -12,12 +11,11 @@ if parent_dir not in sys.path:
 from util.envutils import EnvUtils
 # Database configuration
 envutils=EnvUtils()
-DB_CONFIG = {
-    'host': envutils.get_required_env("DB_HOST"),
-    'user': envutils.get_required_env("DB_USER"),
-    'password': envutils.get_required_env("DB_PASSWORD"),
-    'db': envutils.get_required_env("DB_NAME")
-}
+# MySQL connection details
+MYSQL_HOST = envutils.get_required_env("DB_HOST")
+MYSQL_USER = envutils.get_required_env("DB_USER")
+MYSQL_PASSWORD = "root"
+MYSQL_DATABASE = "sentrymind"
 
 # Initialize Faker for random data generation
 fake = Faker()

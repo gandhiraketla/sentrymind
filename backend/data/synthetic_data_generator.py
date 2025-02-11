@@ -332,7 +332,7 @@ def generate_structuring_pattern(customer_id: str, risk_manager: 'CustomerRiskMa
             'account_balance_before': balance_before,
             'account_balance_after': balance_after,
             'is_fraud': 1,
-            'fraud_type': 'Structuring'
+            'fraud_type': ''
         }
         transactions.append(transaction)
         base_date += timedelta(days=1)
@@ -378,7 +378,7 @@ def generate_layering_pattern(customer_id: str, risk_manager: 'CustomerRiskManag
             'account_balance_before': balance_before,
             'account_balance_after': balance_after,
             'is_fraud': 1,
-            'fraud_type': 'Layering'
+            'fraud_type': ''
         }
         transactions.append(transaction)
         base_date += timedelta(hours=random.randint(2, 8))
@@ -414,7 +414,7 @@ def generate_large_wire_pattern(customer_id: str, risk_manager: 'CustomerRiskMan
         'account_balance_before': starting_balance,
         'account_balance_after': starting_balance - amount,
         'is_fraud': 1,
-        'fraud_type': 'Large Wire Transfer'
+        'fraud_type': ''
     }
     risk_manager.update_last_transaction(customer_id, transaction['transaction_date'])
     
@@ -457,7 +457,7 @@ def generate_frequent_offshore_pattern(customer_id: str, risk_manager: 'Customer
             'account_balance_before': balance_before,
             'account_balance_after': balance_after,
             'is_fraud': 1,
-            'fraud_type': 'Frequent Offshore Transfers'
+            'fraud_type': ''
         }
         transactions.append(transaction)
         base_date += timedelta(days=random.randint(1, 3))
@@ -517,7 +517,7 @@ def generate_rapid_inout_pattern(customer_id: str, risk_manager: 'CustomerRiskMa
         'account_balance_before': base_balance,
         'account_balance_after': base_balance + deposit_amount,
         'is_fraud': 1,
-        'fraud_type': 'Rapid In-Out'
+        'fraud_type': ''
     }
     transactions.append(deposit)
     
@@ -535,7 +535,7 @@ def generate_rapid_inout_pattern(customer_id: str, risk_manager: 'CustomerRiskMa
         'account_balance_before': deposit['account_balance_after'],
         'account_balance_after': deposit['account_balance_after'] - withdrawal_amount,
         'is_fraud': 1,
-        'fraud_type': 'Rapid In-Out'
+        'fraud_type': ''
     }
     transactions.append(withdrawal)
     risk_manager.update_last_transaction(customer_id, withdrawal['transaction_date'])
