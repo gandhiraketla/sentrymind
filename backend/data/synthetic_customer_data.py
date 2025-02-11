@@ -4,11 +4,20 @@ import uuid
 from datetime import datetime, timedelta
 from faker import Faker
 
-# MySQL connection details
-MYSQL_HOST = "localhost"
-MYSQL_USER = "root"
-MYSQL_PASSWORD = "root"
-MYSQL_DATABASE = "sentrymind"
+import os
+import sys
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
+from util.envutils import EnvUtils
+# Database configuration
+envutils=EnvUtils()
+DB_CONFIG = {
+    'host': envutils.get_required_env("DB_HOST"),
+    'user': envutils.get_required_env("DB_USER"),
+    'password': envutils.get_required_env("DB_PASSWORD"),
+    'db': envutils.get_required_env("DB_NAME")
+}
 
 # Initialize Faker for random data generation
 fake = Faker()

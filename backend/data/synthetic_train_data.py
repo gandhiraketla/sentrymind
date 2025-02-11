@@ -5,12 +5,19 @@ import uuid
 from typing import List, Dict, Any
 import time
 
+import os
+import sys
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
+from util.envutils import EnvUtils
 # Database configuration
+envutils=EnvUtils()
 DB_CONFIG = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': 'root',
-    'db': 'sentrymind'
+    'host': envutils.get_required_env("DB_HOST"),
+    'user': envutils.get_required_env("DB_USER"),
+    'password': envutils.get_required_env("DB_PASSWORD"),
+    'db': envutils.get_required_env("DB_NAME")
 }
 
 # Constants

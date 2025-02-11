@@ -5,13 +5,13 @@ import TransactionTable from './components/TransactionTable';
 
 const AILogo = () => (
   <svg className="w-10 h-10" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" strokeWidth="2" className="text-blue-600" />
-    <path d="M15,25 L35,25" stroke="currentColor" strokeWidth="2" className="text-blue-600" />
-    <path d="M25,15 L25,35" stroke="currentColor" strokeWidth="2" className="text-blue-600" />
-    <circle cx="25" cy="25" r="5" fill="currentColor" className="text-blue-600">
+    <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" strokeWidth="2" className="text-white" />
+    <path d="M15,25 L35,25" stroke="currentColor" strokeWidth="2" className="text-white" />
+    <path d="M25,15 L25,35" stroke="currentColor" strokeWidth="2" className="text-white" />
+    <circle cx="25" cy="25" r="5" fill="currentColor" className="text-white">
       <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" />
     </circle>
-    <circle cx="25" cy="25" r="12" fill="none" stroke="currentColor" strokeWidth="1" className="text-blue-600">
+    <circle cx="25" cy="25" r="12" fill="none" stroke="currentColor" strokeWidth="1" className="text-white">
       <animate attributeName="r" values="12;14;12" dur="2s" repeatCount="indefinite" />
       <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite" />
     </circle>
@@ -30,25 +30,41 @@ const Header = () => {
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-10 bg-gradient-to-r from-blue-50 to-blue-100 border-b border-blue-200">
-      <div className="flex justify-between items-center h-16 px-4">
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center justify-center">
-            <AILogo />
+    <div className="fixed top-0 left-0 right-0 z-10">
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-95"></div>
+      
+      <div className="relative">
+        <div className="flex justify-between items-center h-16 px-6">
+          <div className="flex items-center space-x-3">
+            <div className="flex items-center justify-center p-2 rounded-lg bg-white/20">
+              <AILogo />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-2xl font-bold text-white">
+                SentryMind
+              </span>
+              <span className="text-xs text-blue-100">
+                Fraud Analysis Platform
+              </span>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-800">
-              SentryMind
-            </span>
-            <span className="text-xs text-blue-600">Fraud Analysis Platform</span>
+          
+          <div className="flex items-center">
+            <div className="flex items-center space-x-2 bg-white/20 px-4 py-2 rounded-lg border border-white/20 text-white">
+              <Clock className="w-5 h-5" />
+              <div className="flex flex-col">
+                <span className="text-sm font-medium">
+                  {currentDateTime.toLocaleTimeString()}
+                </span>
+                <span className="text-xs opacity-80">
+                  {currentDateTime.toLocaleDateString()}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="flex items-center space-x-2 bg-white/80 px-4 py-2 rounded-lg border border-blue-200">
-          <Clock className="w-5 h-5 text-blue-600" />
-          <span className="text-blue-800">
-            {currentDateTime.toLocaleString()}
-          </span>
-        </div>
+        
+        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-blue-200/30 to-transparent"></div>
       </div>
     </div>
   );
@@ -56,7 +72,7 @@ const Header = () => {
 
 const Sidebar = ({ currentView, setCurrentView }) => {
   return (
-    <div className="fixed top-16 left-0 bottom-0 w-64 bg-blue-50 border-r border-blue-200">
+    <div className="fixed top-16 left-0 bottom-0 w-64 bg-white border-r border-gray-200 shadow-sm">
       <nav className="h-full p-4">
         <ul className="space-y-2">
           <li>
